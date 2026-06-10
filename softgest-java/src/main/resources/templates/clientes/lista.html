@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Clientes')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+<main class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">Clientes</h4>
+        <a href="/clientes/nuevo" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo cliente</a>
+    </div>
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert" th:text="${success}"><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white">
+            <form class="d-flex gap-2" method="get" action="/clientes">
+                <input type="text" name="q" class="form-control form-control-sm" placeholder="Buscar por nombre o documento..." th:value="${q}">
+                <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-search"></i></button>
+            </form>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light"><tr><th>Nombre</th><th>Documento</th><th>Teléfono</th><th>Tipo</th><th>Acciones</th></tr></thead>
+                <tbody>
+                <tr th:each="c : ${clientes}">
+                    <td th:text="${c.nombre}"></td><td th:text="${c.documento}"></td>
+                    <td th:text="${c.telefono}"></td>
+                    <td><span class="badge" th:classappend="${c.tipo == 'EMPRESA'} ? 'bg-info' : 'bg-secondary'" th:text="${c.tipo}"></span></td>
+                    <td><a th:href="@{'/clientes/editar/' + ${c.id}}" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil"></i></a></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(clientes)}"><td colspan="5" class="text-center text-muted py-4">No hay clientes registrados</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body></html>

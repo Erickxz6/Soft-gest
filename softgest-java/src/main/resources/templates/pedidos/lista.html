@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Pedidos')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div th:replace="~{fragments/layout :: sidebar}"></div>
+<main class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">Pedidos</h4>
+        <a href="/pedidos/nuevo" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo pedido</a>
+    </div>
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" th:text="${success}"><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" th:text="${error}"><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white d-flex gap-2">
+            <a href="/pedidos" class="btn btn-sm" th:classappend="${estadoFiltro == null} ? 'btn-dark' : 'btn-outline-secondary'">Todos</a>
+            <a th:each="e : ${estados}" th:href="@{/pedidos(estado=${e})}" class="btn btn-sm" th:classappend="${estadoFiltro == e.name()} ? 'btn-dark' : 'btn-outline-secondary'" th:text="${e}"></a>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light"><tr><th>Código</th><th>Cliente</th><th>Vendedor</th><th>Estado</th><th>Total</th><th>Fecha</th><th></th></tr></thead>
+                <tbody>
+                <tr th:each="p : ${pedidos}">
+                    <td><a th:href="@{'/pedidos/' + ${p.id}}" class="fw-semibold text-decoration-none" th:text="${p.codigo}"></a></td>
+                    <td th:text="${p.cliente.nombre}"></td>
+                    <td th:text="${p.vendedor.nombreCompleto}"></td>
+                    <td><span class="badge" th:classappend="${p.estado.name() == 'PENDIENTE'} ? 'bg-warning text-dark' : (${p.estado.name() == 'CANCELADO'} ? 'bg-danger' : (${p.estado.name() == 'ENTREGADO'} ? 'bg-success' : 'bg-primary'))" th:text="${p.estado}"></span></td>
+                    <td>$<span th:text="${#numbers.formatDecimal(p.total, 0, 'COMMA', 0, 'POINT')}"></span></td>
+                    <td class="small text-muted" th:text="${#temporals.format(p.creadoEn, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td><a th:href="@{'/pedidos/' + ${p.id}}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye"></i></a></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(pedidos)}"><td colspan="7" class="text-center text-muted py-4">No hay pedidos</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body></html>
